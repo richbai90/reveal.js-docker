@@ -31,7 +31,7 @@ const banner = `/*!
 * ${pkg.homepage}
 * MIT licensed
 *
-* Copyright (C) 2011-2021 Hakim El Hattab, https://hakim.se
+* Copyright (C) 2011-2022 Hakim El Hattab, https://hakim.se
 */\n`
 
 // Prevents warnings from opening too many test pages
@@ -265,6 +265,8 @@ gulp.task('eslint', () => gulp.src(['./js/**', 'gulpfile.js'])
 
 gulp.task('test', gulp.series( 'eslint', 'qunit' ))
 
+gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'plugins'), 'test'))
+
 gulp.task('fontawesome', () =>
     gulp.src(['./node_modules/@fortawesome/**']).pipe(gulp.dest('./lib/')));
 
@@ -273,22 +275,24 @@ gulp.task('twemoji',() =>
 
 gulp.task('build', gulp.parallel('js', 'css', 'plugins', 'fontawesome', 'twemoji'))
 
-gulp.task('package', gulp.series('build', () =>
+gulp.task('package', gulp.series(() =>
 
-        gulp.src([
+    gulp.src(
+        [
             './index.html',
             './dist/**',
             './lib/**',
             './images/**',
             './plugin/**',
+            './**.md',
             './docs/slides/**.md',
             './favicon.ico'
-        ], { base: './' }) /* keep folder structure */
-            .pipe(zip('reveal-js-presentation.zip')).pipe(gulp.dest('./'))
+        ],
+        { base: './' }
     )
-)
+        .pipe(zip('reveal-js-presentation.zip')).pipe(gulp.dest('./'))
 
-gulp.task('default', gulp.series('build', 'test'))
+))
 
 gulp.task('reload', () => gulp.src(['*.html', '*.md'])
     .pipe(connect.reload()));
@@ -311,7 +315,7 @@ gulp.task('serve', () => {
 
     gulp.watch(['js/**'], gulp.series('js', 'reload', 'eslint'))
 
-    gulp.watch(['plugin/**/plugin.js'], gulp.series('plugins', 'reload'))
+    gulp.watch(['plugin/**/plugin.js', 'plugin/**/*.html'], gulp.series('plugins', 'reload'))
 
     gulp.watch([
         'css/theme/source/*.{sass,scss}',
