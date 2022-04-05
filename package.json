@@ -58,7 +58,7 @@
     "sass": "^1.39.2",
     "yargs": "^15.1.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "twemoji": "^13.1.0"
+    "twemoji": "^14.0.2"
   },
   "browserslist": "> 0.5%, IE 11, not dead",
   "eslintConfig": {
