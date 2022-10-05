@@ -39,7 +39,6 @@
 		<script>
 				const showNotesForPrinting = ${SHOW_NOTES_FOR_PRINTING};
 			
-				evaluateInAndExcludeLocations();
 				const showNotes = showNotesForPrinting && window.location.search.startsWith('?print-pdf') ? "separate-page" : undefined;
 				
 				// More info about initialization & config:
@@ -69,6 +68,10 @@
 					${ADDITIONAL_REVEAL_OPTIONS}
 				});
 
+				Reveal.on( 'ready', event => {
+					evaluateInAndExcludeLocations();
+				} );
+				
 				setPresenterMode(false); // Disable presentation remote mode by default
 				setWarpMenu(false); // Show warp menu by default
 
@@ -125,13 +128,13 @@
 				}
 				
 				function evaluateInAndExcludeLocations() {
-					document.querySelectorAll('section[excludeLocation]').forEach(element => {
-						if (relativeUrl().match(new RegExp(element.getAttribute('excludeLocation'), 'gi'))) {
-							element.remove()
+					document.querySelectorAll('section[exclude-location]').forEach(element => {
+						if (relativeUrl().match(new RegExp(element.getAttribute('exclude-location'), 'gi'))) {
+							element.parentNode.removeChild( element );
 						}});
 			
-					document.querySelectorAll('section[includeLocation]').forEach(element => {
-						if (!relativeUrl().match(new RegExp(element.getAttribute('includeLocation'), 'gi'))) {
+					document.querySelectorAll('section[include-location]').forEach(element => {
+						if (!relativeUrl().match(new RegExp(element.getAttribute('include-location'), 'gi'))) {
 							element.remove()
 						}})
 				}
