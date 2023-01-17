@@ -1,6 +1,6 @@
 {
   "name": "reveal.js",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "description": "The HTML Presentation Framework",
   "homepage": "https://revealjs.com",
   "subdomain": "revealjs",
@@ -60,7 +60,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "twemoji": "^14.0.2"
   },
-  "browserslist": "> 0.5%, IE 11, not dead",
+  "browserslist": "> 2%, not dead",
   "eslintConfig": {
     "env": {
       "browser": true,
