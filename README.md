@@ -4,7 +4,7 @@ reveal.js-docker
 ===
 
 [![Build Status](https://oss.cloudogu.com/jenkins/buildStatus/icon?job=cloudogu-github%2Freveal.js-docker%2Fmaster)](https://oss.cloudogu.com/jenkins/job/cloudogu-github/job/reveal.js-docker/job/master/)
-[![](https://img.shields.io/docker/image-size/cloudogu/reveal.js)](https://hub.docker.com/r/cloudogu/reveal.js)
+[![](https://img.shields.io/docker/v/cloudogu/reveal.js](https://hub.docker.com/r/cloudogu/reveal.js)
 
 Docker images providing easier to use, opinionated reveal.js web apps - web-based slides/presentations. 
 See [example presentation](https://cloudogu.github.io/reveal.js-docker-example) for a showcase of all features.
