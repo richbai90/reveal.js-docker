@@ -268,10 +268,10 @@ gulp.task('test', gulp.series( 'eslint', 'qunit' ))
 gulp.task('default', gulp.series(gulp.parallel('js', 'css', 'plugins'), 'test'))
 
 gulp.task('fontawesome', () =>
-    gulp.src(['./node_modules/@fortawesome/**']).pipe(gulp.dest('./lib/')));
+    gulp.src(['./node_modules/@fortawesome/fontawesome-free/js/all.min.js']).pipe(gulp.dest('./dist/lib/fontawesome-free/')));
 
 gulp.task('twemoji',() =>
-    gulp.src(['./node_modules/twemoji/dist/**']).pipe(gulp.dest('./lib/twemoji')));
+    gulp.src(['./node_modules/twemoji/dist/twemoji.min.js']).pipe(gulp.dest('./dist/lib/twemoji')));
 
 gulp.task('build', gulp.parallel('js', 'css', 'plugins', 'fontawesome', 'twemoji'))
 
@@ -281,7 +281,6 @@ gulp.task('package', gulp.series(() =>
         [
             './index.html',
             './dist/**',
-            './lib/**',
             './images/**',
             './plugin/**',
             './**.md',

@@ -9,5 +9,5 @@ log/*.log
 tmp/**
 node_modules/
 .sass-cache
-lib/fontawesome*
-lib/twemoji
+dist/lib/fontawesome*
+dist/lib/twemoji

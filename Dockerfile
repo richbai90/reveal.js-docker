@@ -43,7 +43,9 @@ ENTRYPOINT [ "/scripts/entrypoint.sh", "npm", "run", "start", "--prefix", "/reve
 FROM aggregator AS prod-aggregator
 WORKDIR /tmp/reveal
 RUN mkdir -p /dist/usr/share/nginx/ /dist/reveal/
-# Package only whats necessary for static website 
+# Don't forget to add our custom plugin/libs
+RUN  node_modules/gulp/bin/gulp.js fontawesome twemoji
+# Package only whats necessary for static website
 RUN node_modules/gulp/bin/gulp.js package
 RUN unzip reveal-js-presentation.zip -d /dist/reveal/
 # Serve web content at same folder in dev and prod: /reveal. This does not work with buildkit.

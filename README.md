@@ -181,7 +181,18 @@ docker build -t cloudogu/reveal.js:local-dev --build-arg ENV=dev .
 ```
 
 Note: If only one build is required, buildkit would be more efficient. However, prod is failing with buildkit.
-Try it with `export DOCKER_BUILDKIT` See [this issue](https://github.com/moby/moby/issues/735)
+Try it with `export DOCKER_BUILDKIT=0` See [this issue](https://github.com/moby/moby/issues/735)
+
+## Upgrading from upstream reveal.js
+
+```shell
+git remote add upstream https://github.com/hakimel/reveal.js
+git pull upstream/tags/4.4.0 master
+# Fix merge conflicts.
+# Build Docker images and test both images variants (e.g. with cloudogu/reveal.js-docker-example)
+git tag -s 4.4.0-r1
+git push --follow-tags
+```
 
 ## Tests
 
