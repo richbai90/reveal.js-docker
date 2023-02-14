@@ -81,6 +81,7 @@ See [index.html pseudo-template](#indexhtml-pseudo-template) to see the effects 
      * `cloudogu.css`
      * `cloudogu-black.css`
      * [reveal.js themes](https://github.com/hakimel/reveal.js/#theming)
+  * `WIDTH`, `HEIGHT`, `MARGIN`, `MIN_SCALE`, `MAX_SCALE` - [presentation size](https://revealjs.com/presentation-size/)
   * `SHOW_NOTES_FOR_PRINTING` - print speaker notes - defaults to `false`.
   * `ADDITIONAL_REVEAL_OPTIONS` - [additional reveal.js options](https://revealjs.com/config/)
   * `ADDITIONAL_PLUGINS` - additional reveal.js plugins.

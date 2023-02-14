@@ -1,6 +1,5 @@
 #!/bin/sh
 
-set -o nounset -o errexit #-o pipefail - only in bash
 
 WEB_FOLDER="${WEB_FOLDER:-"/reveal"}"
 INPUT_INDEX_HTML_TEMPLATE="${INPUT_INDEX_HTML_TEMPLATE:-"${WEB_FOLDER}/index.html"}"
@@ -15,7 +14,15 @@ export ADDITIONAL_PLUGINS=${ADDITIONAL_PLUGINS:-''}
 export ADDITIONAL_REVEAL_OPTIONS=${ADDITIONAL_REVEAL_OPTIONS:-''}
 export SHOW_NOTES_FOR_PRINTING=${SHOW_NOTES_FOR_PRINTING:-'false'}
 
-BASEDIR=$(dirname $0)     
+export WIDTH=${WIDTH:+"width: $WIDTH, "}
+export HEIGHT=${HEIGHT:+"height: $HEIGHT, "}
+export MARGIN=${MARGIN:+"margin: $MARGIN, "}
+export MIN_SCALE=${MIN_SCALE:+"minScale: $MIN_SCALE, "}
+export MAX_SCALE=${MAX_SCALE:+"maxScale: $MAX_SCALE, "}
+
+set -o nounset -o errexit #-o pipefail - only in bash
+
+BASEDIR=$(dirname $0)
 ABSOLUTE_BASEDIR="$( cd $BASEDIR && pwd )"
 
 if [ -f "${RESOURCE_FOLDER}/footer.html" ]; then
