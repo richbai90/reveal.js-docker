@@ -28,8 +28,10 @@ node('docker') {
         String imageName = "cloudogu/reveal.js:${createVersion(git)}"
 
         stage('Build Images') {
-            devImage = docker.build "${imageName}-dev", '--build-arg ENV=dev .'
-            prodImage = docker.build imageName, '.'
+            withEnv(['DOCKER_BUILDKIT=0']) {
+                devImage = docker.build "${imageName}-dev", '--build-arg ENV=dev .'
+                prodImage = docker.build imageName, '.'
+            }
         }
 
         stage('Test Images') {
@@ -38,7 +40,7 @@ node('docker') {
         }
 
         stage('Deploy Images') {
-            docker.withRegistry('', 'hub.docker.com-cesmarvin') {
+            docker.withRegistry('', 'cesmarvin-dockerhub-access-token') {
                 if (git.isTag()) {
                     devImage.push()
                     prodImage.push()
