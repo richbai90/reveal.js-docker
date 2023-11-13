@@ -74,7 +74,7 @@ See [index.html pseudo-template](#indexhtml-pseudo-template) to see the effects 
      Useful if you want to hide slides from printing.
   * `additional.js` - script executed before initializing reveal.js
   * `body-end.html` - `html` injected at the end of HTML `<body>`
-  * `footer.html` - rendered at the footer (lower left corner) for now only works with cloudogu Themes
+  * `footer.html`, `header-left.html`, `header-right.html` - rendered at the footer (lower left corner) or header (upper left/right corner)
 * Optional Env vars: *Note: Make sure to use single quotes*, otherwise parsing in `startPresentation.sh` from [example](https://github.com/cloudogu/reveal.js-docker-example) will fail
   * `TITLE='my title'`
   * `THEME_CSS`
@@ -177,6 +177,7 @@ Real Life:
 Build Docker Images, from repo root
 
 ```bash
+export DOCKER_BUILDKIT=false
 docker build -t cloudogu/reveal.js:local .
 docker build -t cloudogu/reveal.js:local-dev --build-arg ENV=dev .
 ```

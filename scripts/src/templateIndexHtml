@@ -30,6 +30,16 @@ if [ -f "${RESOURCE_FOLDER}/footer.html" ]; then
 </div>"
 fi
 
+if [ -f "${RESOURCE_FOLDER}/header-right.html" ]; then
+    export FOOTER_HTML="<div class=\"header-right text-smaller state-background\">$(cat "${RESOURCE_FOLDER}/header-right.html")
+</div>"
+fi
+
+if [ -f "${RESOURCE_FOLDER}/header-left.html" ]; then
+    export FOOTER_HTML="<div class=\"header-left text-smaller state-background\">$(cat "${RESOURCE_FOLDER}/header-left.html")
+</div>"
+fi
+
 if [ -f "${RESOURCE_FOLDER}/body-end.html" ]; then
     export BODY_END_HTML="$(cat "${RESOURCE_FOLDER}/body-end.html")"
 fi
