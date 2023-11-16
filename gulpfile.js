@@ -1,13 +1,11 @@
 const pkg = require('./package.json')
-const path = require('path')
 const glob = require('glob')
 const yargs = require('yargs')
-const colors = require('colors')
 const through = require('through2');
 const qunit = require('node-qunit-puppeteer')
 
 const {rollup} = require('rollup')
-const {terser} = require('rollup-plugin-terser')
+const terser = require('@rollup/plugin-terser')
 const babel = require('@rollup/plugin-babel').default
 const commonjs = require('@rollup/plugin-commonjs')
 const resolve = require('@rollup/plugin-node-resolve').default
@@ -31,7 +29,7 @@ const banner = `/*!
 * ${pkg.homepage}
 * MIT licensed
 *
-* Copyright (C) 2011-2022 Hakim El Hattab, https://hakim.se
+* Copyright (C) 2011-2023 Hakim El Hattab, https://hakim.se
 */\n`
 
 // Prevents warnings from opening too many test pages
@@ -164,11 +162,10 @@ function compileSass() {
 
     sass.render({
         data: transformedFile.contents.toString(),
-        includePaths: ['css/', 'css/theme/template']
+        file: transformedFile.path,
     }, ( err, result ) => {
         if( err ) {
-            console.log( vinylFile.path );
-            console.log( err.formatted );
+            callback(err);
         }
         else {
             transformedFile.extname = '.css';
@@ -283,7 +280,7 @@ gulp.task('package', gulp.series(() =>
             './dist/**',
             './images/**',
             './plugin/**',
-            './**.md',
+            './**/*.md',
             './docs/slides/**.md',
             './favicon.ico'
         ],
@@ -293,7 +290,7 @@ gulp.task('package', gulp.series(() =>
 
 ))
 
-gulp.task('reload', () => gulp.src(['*.html', '*.md'])
+gulp.task('reload', () => gulp.src(['index.html'])
     .pipe(connect.reload()));
 
 gulp.task('serve', () => {
@@ -305,11 +302,13 @@ gulp.task('serve', () => {
         livereload: true
     })
 
+    const slidesRoot = root.endsWith('/') ? root : root + '/'
     gulp.watch([
-        '*.html',
-        '**/**.md',
-        'images/**',
-        'resources/**'
+        slidesRoot + '**/*.html',
+        slidesRoot + '**/*.md',
+        slidesRoot + 'images/**',
+        slidesRoot + 'resources/**',
+        `!${slidesRoot}**/node_modules/**`, // ignore node_modules
     ], gulp.series('reload'))
 
     gulp.watch(['js/**'], gulp.series('js', 'reload', 'eslint'))
@@ -317,7 +316,7 @@ gulp.task('serve', () => {
     gulp.watch(['plugin/**/plugin.js', 'plugin/**/*.html'], gulp.series('plugins', 'reload'))
 
     gulp.watch([
-        'css/theme/source/*.{sass,scss}',
+        'css/theme/source/**/*.{sass,scss}',
         'css/theme/template/*.{sass,scss}',
     ], gulp.series('css-themes', 'reload'))
 
