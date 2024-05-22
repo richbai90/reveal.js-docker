@@ -1,6 +1,6 @@
 ARG ENV=prod
-FROM node:18.14.0-alpine3.17 as node
-FROM nginxinc/nginx-unprivileged:1.23.3-alpine-slim as nginx
+FROM node:20-alpine as node
+FROM nginxinc/nginx-unprivileged:1-alpine-slim as nginx
 
 FROM node as aggregator 
 RUN mkdir -p /tmp/reveal /dist/scripts
