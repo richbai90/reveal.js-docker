@@ -11,6 +11,7 @@
 !favicon.ico
 !gulpfile.js
 !index.html
+!index.ejs
 !package.json
 !package-lock.json
 
