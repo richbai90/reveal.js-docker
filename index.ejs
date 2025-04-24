@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	
 		<title><%= title %></title>
-	
+    <base href="<%= baseURL %>">
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
 		<link rel="stylesheet" href="dist/theme/<%= themeCss %>">
@@ -34,8 +34,10 @@
 
 		<!-- This already registers the plugin -->
 		<script src="plugin/reveal-twemoji/reveal-twemoji.js"></script>
-		
 		<%- additionalScript %>
+    <% additionalScripts.forEach(script => { %>
+      <script src="<%= script %>"></script>
+    <% }) %>
 		<script>
 			const showNotesForPrinting = <%= showNotesForPrinting %>;
 		
@@ -45,7 +47,7 @@
 			// - https://revealjs.com/initialization/
 			// - https://revealjs.com/config/
 			Reveal.initialize({
-				hash: true, <%= width %><%= height %><%= margin %><%= minScale %><%= maxScale %>
+				hash: true, 
 				history: true,
 				pdfSeparateFragments : false,
 				// Use the default (h.v), because the printed version will always have this anyway
@@ -65,7 +67,7 @@
 					RevealSearch,
 					<%= additionalPlugins %>
 				],
-				<%= additionalRevealOptions %>
+        ...<%- JSON.stringify(additionalRevealOptions) %>
 			});
 
 			Reveal.on( 'ready', event => {

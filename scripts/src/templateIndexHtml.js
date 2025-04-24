@@ -20,6 +20,8 @@ let config = {
   margin: "",
   minScale: "",
   maxScale: "",
+  baseURL: "",
+  additionalScripts: [],
 };
 
 // Set resource folder from environment or use default
@@ -56,9 +58,11 @@ Object.entries({
   MARGIN: "margin",
   MIN_SCALE: "minScale",
   MAX_SCALE: "maxScale",
+  BASE_URL: "baseURL",
+  ADDITIONAL_SCRIPTS: "additionalScripts",
 }).forEach(([envVar, configKey]) => {
   if (process.env[envVar] !== undefined) {
-    config[configKey] = process.env[envVar];
+    config[configKey] = prepareEntry(envVar, process.env[envVar]);
   }
 });
 
@@ -85,19 +89,27 @@ function loadOptionalContent(filePath, defaultContent = "") {
   return defaultContent;
 }
 
+// Move all config options into the config object so we can spread the whole thing
+if (config.width) {
+  config.additionalRevealOptions.width = config.width;
+}
+if (config.height) {
+  config.additionalRevealOptions.height = config.height;
+}
+
+if (config.margin) {
+  config.additionalRevealOptions.margin = config.margin;
+}
+if (config.minScale) {
+  config.additionalRevealOptions.minScale = config.minScale;
+}
+if (config.maxScale) {
+  config.additionalRevealOptions.maxScale = config.maxScale;
+}
+
 // Prepare template data
 const templateData = {
-  title: config.title,
-  themeCss: config.themeCss,
-  additionalPlugins: config.additionalPlugins,
-  additionalRevealOptions: config.additionalRevealOptions,
-  showNotesForPrinting: config.showNotesForPrinting,
-  width: config.width,
-  height: config.height,
-  margin: config.margin,
-  minScale: config.minScale,
-  maxScale: config.maxScale,
-
+  ...config,
   // Load optional HTML components
   footerHtml: "",
   bodyEndHtml: loadOptionalContent(
@@ -190,4 +202,132 @@ try {
 } catch (error) {
   console.error("Error rendering template:", error);
   process.exit(1);
+}
+
+/**
+ * Process environment variable values with special handling for complex options
+ * @param {string} key - The environment variable key
+ * @param {string} value - The environment variable value
+ * @returns {string|number|boolean|Object} - Processed value
+ */
+function prepareEntry(key, value) {
+  console.info(`Preparing Entry for ${key}=${value}`);
+  // Return undefined for empty or undefined values
+  if (value === undefined || value === null || value === "") {
+    return undefined;
+  }
+
+  try {
+    switch (key) {
+      case "ADDITIONAL_REVEAL_OPTIONS":
+        // Handle comma-separated key=value pairs and convert types
+        return value.split(",").reduce((obj, pair) => {
+          // Skip empty entries
+          if (!pair.trim()) return obj;
+
+          // Check if the pair contains an equals sign
+          if (!pair.includes("=")) {
+            console.warn(
+              `Warning: Skipping invalid option format in ${key}: "${pair}". Expected format: key=value`,
+            );
+            return obj;
+          }
+
+          const [k, v] = pair.split("=").map((part) => part.trim());
+
+          // Skip if key is empty
+          if (!k) {
+            console.warn(`Warning: Empty key in ${key}: "${pair}"`);
+            return obj;
+          }
+
+          // Convert value to appropriate type
+          return { ...obj, [k]: convertValueType(v) };
+        }, {});
+
+      case "ADDITIONAL_SCRIPTS":
+        if (!value) return [];
+        return value
+          .split(",")
+          .map((script) => script.trim())
+          .filter((script) => script.length > 0);
+
+      case "WIDTH":
+      case "HEIGHT":
+      case "MARGIN":
+      case "MIN_SCALE":
+      case "MAX_SCALE":
+        // For specific numeric properties, convert to number if possible
+        return isNumeric(value) ? Number(value) : value;
+
+      case "SHOW_NOTES_FOR_PRINTING":
+        // Convert string boolean values to actual booleans
+        return convertToBoolean(value);
+
+      default:
+        // For other values, just return as is
+        return value;
+    }
+  } catch (error) {
+    console.error(`Error processing ${key}=${value}: ${error.message}`);
+    return value; // Return original value on error
+  }
+}
+
+/**
+ * Convert a string value to appropriate type (boolean, number, or string)
+ * @param {string} value - The string value to convert
+ * @returns {boolean|number|string} - Converted value
+ */
+function convertValueType(value) {
+  // Handle null/undefined
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  // Convert string to appropriate type
+  const trimmedValue = String(value).trim();
+
+  // Boolean conversion for true/false strings
+  if (["true", "false"].includes(trimmedValue.toLowerCase())) {
+    return trimmedValue.toLowerCase() === "true";
+  }
+
+  // Number conversion for numeric strings
+  if (isNumeric(trimmedValue)) {
+    return Number(trimmedValue);
+  }
+
+  // Keep as string for other values
+  return trimmedValue;
+}
+
+/**
+ * Check if a string value can be converted to a number
+ * @param {string} value - Value to check
+ * @returns {boolean} - True if the value can be converted to a number
+ */
+function isNumeric(value) {
+  if (value === null || value === undefined || value === "") {
+    return false;
+  }
+  return !isNaN(value) && !isNaN(parseFloat(value));
+}
+
+/**
+ * Convert various string representations to boolean
+ * @param {string} value - String value to convert
+ * @returns {boolean} - Resulting boolean value
+ */
+function convertToBoolean(value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (value === undefined || value === null) {
+    return false;
+  }
+
+  const falseValues = ["false", "0", "no", "n", "off", ""];
+  return !falseValues.includes(String(value).toLowerCase().trim());
 }

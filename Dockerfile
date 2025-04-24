@@ -31,8 +31,8 @@ RUN mkdir -p /dist/lib/
 RUN cp /usr/lib/libintl.so.8 /dist/lib/
 
 FROM node AS dev
-RUN cd /scripts && npm i --save ejs
 COPY --from=dev-aggregator /dist /
+RUN cd /scripts && npm i --save ejs
 EXPOSE 8000
 EXPOSE 35729
 ENTRYPOINT [ "/scripts/entrypoint.sh", "npm", "run", "start", "--prefix", "/reveal/"]
@@ -52,8 +52,9 @@ RUN ln -s /reveal /dist/usr/share/nginx/html
 
 FROM nginx AS prod
 USER root
-RUN apk add --update nodejs npm && cd /scripts && npm i --save ejs
+RUN apk add --update nodejs npm 
 COPY --from=prod-aggregator --chown=nginx /dist /
+RUN cd /scripts && npm i --save ejs
 EXPOSE 8080
 ENTRYPOINT [ "/scripts/entrypoint.sh", "nginx", "-g", "daemon off;"]
 
